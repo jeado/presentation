@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="kr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=1024" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <title>Google HackFair - Starting AngularJS</title>
+    
+    <meta name="description" content="구글 HacfFair 2012 AngularJS 발표자료" />
+    <meta name="author" content="Bartek Szopka" />
+
+    <link rel="shortcut icon" href="favicon.png" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+
+    <link rel="stylesheet" href="css/presantation.css"/>
+    <link rel="stylesheet" href="css/bootstrap.css"/>
+    <link rel="stylesheet" href="css/todo.css"/>
+    <!-- <script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script> -->
+    <!-- <script type="text/javascript" src="http://code.jquery.com/jquery-1.8.2.min.js"></script> -->
+    <script type="text/javascript" src="js/libs/d3.v3.min.js"></script>
+    <script type="text/javascript" src="js/libs/jquery-1.8.2.min.js"></script>
+    <script type="text/javascript" src="js/libs/underscore.js"></script>
+    <script type="text/javascript" src="js/libs/angular.js"></script>
+
+</head>
+
+<body class="impress-not-supported">
+    <div class="fallback-message">
+        <p>Your browser <b>doesn't support the features required</b> by impress.js, so you are presented with a simplified version of this presentation.</p>
+        <p>For the best experience please use the latest <b>Chrome</b>, <b>Safari</b> or <b>Firefox</b> browser.</p>
+    </div>
+
+<div id="impress">
+    
+    <div id="title" class="step" data-x="3500" data-y="2100"  data-scale="3">
+        <p class="try">Starting</p>
+        <img class="title" src="images/AngularJS-large.png" alt="AngularJS">
+        <!-- <h1>AngularJS<sup>*</sup></h1> -->
+        <p class="footnote">대우정보시스템 고재도</p>
+    </div>
+
+   
+    <div id="intro" class="step" data-x="850" data-y="3000" data-rotate="90" data-scale="2">
+        <p>AngularJS is a <strong>structural framework</strong> for dynamic web apps.
+        <br/>
+        <br/>
+        <ul>
+            <li>MVW</li>
+            <li>Two Way Data-Binding</li>
+            <li>HTML as the template</li>
+            <li>Directives - Reusable components</li>
+            <li>Dependency Injection</li>
+        </ul>
+        
+        <br/>
+        <p class="footnote">
+            Many examples, tutorials, videos and API doc : <a target="blank" href="http://www.angularjs.org">angularjs.org</a>
+        </p>
+        </p>
+    </div>
+
+    <div id="coding" class="step" data-x="0" data-rotate="180" data-y="0" data-scale="1">
+        <p>NOW <b>Coding</b> <span class="thoughts">TIME</span></p>
+    </div>
+
+    <script type="text/javascript">
+        function todoCtrl($scope) {
+            var userNmae = "jeado";
+            var todos = [
+                { text: 'task 1', done : false},
+                { text: 'task 2', done : true},
+                { text: 'task 3', done : false},
+                { text: 'task 4', done : false}
+            ];
+
+            $scope.name = userNmae;
+            $scope.todos = todos;
+
+            $scope.remain = function() {
+                return _.reduce($scope.todos,function(p,n) {
+                    return (n.done === false) ? p+1 : p;
+                },0);
+            };
+
+            $scope.add = function(text) {
+                var newTask = {
+                    text: text,
+                    done: false
+                };
+
+                $scope.todos.push(newTask);
+                $scope.newTaskText = '';
+            };
+
+            $scope.archive = function() {
+                $scope.todos = _.filter($scope.todos,function(item) {
+                    return (item.done === false) ? true : false;
+                });
+            };
+        };
+    </script>
+    <div ng-app id="todo" ng-controller="todoCtrl" class="step" data-x="4025" data-y="5100" data-z="-1000"data-rotate="360" data-scale="2">
+        <h1>{{name}}`s Things To Do</h1>
+        
+        <p>
+            Remaining <strong>{{remain()}}</strong> of <strong>{{todos.length}}</strong>
+            [ <a href="" ng-click="archive()">archive</a> ]
+        </p>
+
+        <ul class="unstyled">
+            <li ng-repeat="todo in todos"><input type="checkbox" ng-model="todo.done">{{todo.text}}</li>
+        </ul>
+
+        <form name="todoForm" action="">
+            <input name="newTodo" type="text" ng-maxlength="5" ng-model="newTaskText">
+            <span ng-show="todoForm.newTodo.$error.maxlength">Item text is too long!</span>
+            <button id="add" class="btn btn-primary" ng-click="add(newTaskText)" ng-disabled="!newTaskText">add</button>
+        </form>
+        <pre>
+            {{todos}}
+        </pre>
+    </div>
+
+
+    <div id="expression" class="step" data-x="2500" data-y="-1100" data-rotate="270" data-scale="4">
+        <p>
+            <b>Expressions</b> are JavaScript-like code snippets that are usually placed in bindings such as {{ expression }}.
+        </p>
+        <pre>
+        1+2
+        3*10 | currency
+        user.name
+        </pre>
+        <ul>
+            <li>Attribute Evaluation</li>
+            <li>Forgiving</li>
+            <li>No Control Flow Statements</li>
+            <li>Filters</li>
+        </ul>
+    </div>
+    <div id="scope" class="step" data-x="2500" data-y="-5100" data-scale="2">
+        <p>
+            The <b>scope</b> is responsible for detecting changes to the model section and provides the execution context for expressions.
+            <br>
+            <br>
+            The <b>scope</b> is the glue between application controller and the view.
+        </p>
+        <div class="example">
+            
+            <div ng-controller="GreetCtrl">
+              Hello {{name}}!
+            </div>
+            <div ng-controller="ListCtrl">
+              <ol>
+                <li ng-repeat="name in names">{{name}}</li>
+              </ol>
+            </div>
+
+        </div>
+
+        <script type="text/javascript">
+            function GreetCtrl($scope) {
+              $scope.name = 'World';
+            }
+            function ListCtrl($scope) {
+              $scope.names = ['Jeado', 'Google', 'HackFair'];
+            }
+            angular.bootstrap($('#scope .example'));
+        </script>
+    </div> 
+
+    <div id="scopeImage" class="step" data-x="2500" data-y="-5100" data-scale="4">
+        <img src="images/scopes.png" width="800" alt="">
+    </div>
+
+    <div id="model" class="step" data-x="-1500" data-y="2000" data-z="200" data-rotate-x="-50" data-rotate="0" data-scale="2">
+        <p>
+            <b>The model</b> is the data which is used merged with the template to produce the view. 
+        </p>
+        <img src="images/concepts-model.png" width="800" alt="">
+    </div>
+
+    <div id="view" class="step" data-x="-1000" data-y="5000" data-z="-100" data-rotate-y="-10" data-rotate="0" data-scale="2">
+        <p>
+            <b>The view</b> begins its life as a template, it is merged with the model and finally rendered into the browser DOM.
+        </p>
+        <img src="images/concepts-view.png" width="500" alt="">
+    </div>
+
+    <div id="controller" class="step" data-x="-3500" data-y="5100" data-rotate="90" data-scale="2">
+        <p><b>Controller`s</b> job is to construct the model and publish it to the view along with callback methods.</p>
+        <ul>
+            <li>Setting up the initial state of a scope object</li>
+            <li>Adding Behavior to a Scope Object</li>
+            <li>It should contain only the business logic needed for a single view</li>
+        </ul>
+        <img src="images/concepts-controller.png" width="700" alt="">
+    </div>
+
+    <div id="di" class="step" data-x="-3500" data-y="2000" data-rotate="90" data-scale="2">
+        <p>
+           Let`s make a log <b>service</b> when task is done!
+        </p>
+    </div>
+
+    <script type="text/javascript" src="js/todo-service.js"></script>
+    <div id="log-service" ng-controller="todoCtrl" class="step" data-x="4025" data-y="6200" data-z="-1000"data-rotate="360" data-scale="2">
+
+        <h1>{{name}}`s Things To Do</h1>
+        
+        <p>
+            Remaining <strong>{{remain()}}</strong> of <strong>{{todos.length}}</strong>
+            [ <a href="" ng-click="archive()">archive</a> ]
+        </p>
+
+        <ul class="unstyled">
+            <li ng-repeat="todo in todos"><input ng-click="check(todo)" type="checkbox" ng-model="todo.done">{{todo.text}}</li>
+        </ul>
+
+        <form name="todoForm" action="">
+            <input name="newTodo" type="text" ng-maxlength="5" ng-model="newTaskText">
+            <span ng-show="todoForm.newTodo.$error.maxlength">Item text is too long!</span>
+            <button id="add" class="btn btn-primary" ng-click="add(newTaskText)" ng-disabled="!newTaskText">add</button>
+        </form>
+    </div>
+
+    <div id="directive" class="step" data-x="-3500" data-y="0" data-rotate="90" data-scale="1">
+        <p>
+           Now, Let`s make a graph using <b>directive</b> in AngularJS!
+        </p>
+    </div>
+
+    <script type="text/javascript" src="js/todo-service.js"></script>
+    <div id="log-graph" ng-controller="graphCtrl" class="step" data-x="4025" data-y="7300" data-z="-1000"data-rotate="360" data-scale="2">
+
+        <h1>{{name}}`s 시간별 테스크 완료 횟 수</h1>
+
+        <div class="toolbar">
+            <button class="btn btn-primary add-random-data" ng-click="addSomeData()">렌덤 데이터 추가</button>
+            <button class="btn btn-primary" ng-click="getData()">조회</button>
+        </div>
+
+        <bar-graph val="data"></bar-graph>
+
+        <pre>{{data}}</pre>
+
+    </div>
+    <script type="text/javascript" src="js/todo-graph.js"></script>
+
+    <div id="useAngularJS" class="step" data-x="6700" data-y="-300" data-scale="6">
+        <p>No more <b>Spagetti Code</b><br/><b class="useAngularJS">Use AngularJS</b></p>
+    </div>
+
+    <div id="source" class="step" data-x="6500" data-y="2000" data-rotate="20" data-scale="4">
+        <p>You can fork!</p>
+        <q><a href="https://github.com/haibane84/google-hackFair-angularJS">use the source</a>, Luke!</q>
+    </div>
+
+    <div id="one-more-thing" class="step" data-x="6000" data-y="4000" data-scale="2">
+        <p>one more thing...</p>
+    </div>
+
+    <div id="KAUG-in-facebook" class="step" data-x="6200" data-y="4800" data-z="-100" data-rotate-x="-40" data-rotate-y="10" data-scale="2">
+        <p><b><span class="korea">Korea</span> <span class="AngularJS">AngularJS</span> <span class="User">User</span> <span class="Group">Group</span></b> <span class="in">in</span> FaceBook<sup>*</sup>:)</p>
+        <span class="footnote">놀러와 주세요 : <a target="blank" href="http://www.facebook.com/groups/Korea.AngularJS.User.Group/">Korea AngularJS User Group</a></span>
+    </div>
+
+    <div id="qna" class="step" data-x="3000" data-y="1500" data-scale="10">
+        <p class="hover">
+            QnA
+        </p>
+    </div>
+
+    <div id="overview" class="step" data-x="3000" data-y="1500" data-scale="10">
+    </div>
+
+</div>
+
+<script src="js/libs/impress.js"></script>
+<script>impress().init();</script>
+
+</body>
+</html>
+

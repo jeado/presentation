@@ -1,0 +1,245 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+
+		<title>GDG DevFest 2013 - AngularJS</title>
+
+		<meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+		<meta name="author" content="Hakim El Hattab">
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.min.css">
+		<link rel="stylesheet" href="css/theme/night.css" id="theme">
+		<link rel="stylesheet" href="css/super.css">
+
+		<!-- For syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+		<style type="text/css">
+		.reveal span.pink{
+			  color: white;
+			  background: #ff5e99;
+			  text-shadow: none;
+			}
+		</style>
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<section>
+					<h2>AngularJS로 <span class="blue">UI 컴포넌트</span>개발</h2>
+					<h3>Directive(지시자) 개발</h3>
+					<br>
+					<p>
+						<a href="https://plus.google.com/111326406112009421991">고재도</a>@<a href="https://plus.google.com/communities/109067040035659120428">GDG Korea WebTech</a>
+					</p>
+				</section>
+
+				<section data-state="normal">
+					<h2>고재도</h2>
+
+					<p style="padding-bottom: 10px;">
+						<a href="https://plus.google.com/communities/109067040035659120428">GDG Korea WebTech</a> 운영자
+					</p>
+					<p style="padding-top: 10px;">
+						<small style="text-align :right; display:block;">haibane84@gmail.com</small>
+						<small style="text-align :right; display:block;">https://plus.google.com/+JeadoKo/</small>
+					</p>
+				</section>
+				<section>
+					<section>
+						<h1>UI 컴포넌트?</h1>
+					</section>
+					<section>
+						<h2>그리드</h2>
+						<a href="http://flarnie.com/2013/javascript/best-javascript-grids/" target="_blank"><img src="images/gdg/grid-mashup1.png"></a>
+					</section>
+					<section>
+						<h2>차트</h2>
+						<a href="http://nvd3.org/" target="_blank"><img src="images/gdg/chart-mashup1.png" style="height:500px; border:none; background:none;"></a>
+					</section>
+					<section>
+						<h2>그 외에..</h2>
+						<ul>
+							<li>Tabs</li>
+							<li>Datepicker</li>
+							<li>Carousel</li>
+							<li>Modal (Dailogue)</li>
+							<li>ComboBox</li>
+							<li>....</li>	
+						</ul>
+					</section>
+				</section>
+				<section>
+					<h3>AngularJS는 아시죠?</h3>
+					<img src="images/gdg/AngularJS-large.png" style="background-color:white; padding: 10px;">
+				</section>
+				<section>
+					<h2>AngularJS는 어떤 UI 컴포넌트를 <br><br>제공할까요?</h2>
+				</section>
+				<section>
+					<img src="images/gdg/nothing.jpg">
+					<p>아무것도 없습니다.</p>	
+				</section>
+				<section>
+					<h3>jQuery는 플러그인이 있다!</h3>
+
+					<a href="http://plugins.jquery.com/" target="_blank">
+						<img src="images/gdg/jquery-plugin-registry.png">
+					</a>
+				</section>
+
+				<section>
+					<h1>Directive (지시자)</h1>
+				</section>
+
+
+				<section data-state="normal">
+					<h3>An overview of AngularJS</h3>
+					<br>
+					<p>Google이 만든 웹 어플리케이션을 위한 <br> Structural Framework</p>
+					<br>
+					<p>
+						<ul>
+							<li>양방향 데이터 바인딩</li>
+							<li>MVW</li>
+							<li>Template</li>
+							<li style="color:#d14836">Directive를 통한 UI 컴포넌트 재사용</li>
+							<li>E2E 테스팅 및 Mocks</li>
+							<li>의존성 주입 (DI)</li>
+							<li>...</li>
+						</ul>
+					</p>
+					<br>
+					<p>
+						CRUD Apps 필수 기능 제공을 통한
+						<br>
+						어플리케이션 개발의 단순화
+					</p>
+				</section>
+
+				<section>
+					<h1>지시자란?</h1>
+					<p>
+						directives are <b style="background: #ff5e99;">markers</b> on a DOM element (such as an attribute, element name, or CSS class) that tell AngularJS's HTML compiler ($compile) to <b style="background: #ff5e99;">attach a specified behavior to that DOM element or even transform the DOM element</b> and its children. (from AngularJS Officail DOC)
+					</p>
+				</section>
+				
+				<section>
+					<h3>초간단 hello 지시자</h3>
+<pre style="margin: 0px auto;">
+	<code data-trim contenteditable style="font-size: 18px; padding">
+&lt;body ng-app="demo"&gt;
+ &lt;h1 hello&gt;&lt;/h1&gt;
+&lt;/body&gt;
+&lt;script type="text/javascript"&gt;
+angular.module('demo', []).
+ directive('hello', [function () {
+  return {
+   restrict: 'A',
+   link: function (scope, iElement, iAttrs) {
+    iElement.append("안녕하세요");	
+   }
+  };
+}]);
+&lt;/script&gt;
+	</code>
+</pre>					
+				</section>
+				
+
+				<section>
+					<img src="images/gdg/jqueryVsDirective.png" style="padding: 10px; background: white; height: 500px;">
+				</section>
+
+				<section>
+					<h2>Built-in Directive</h2>
+					<p>a, form, input, <span class="pink">ngApp</span>, ngBind, ngChange, ngClass, <span class="pink">ngClick</span>, <span class="pink">ngController</span>, ngCloak, ngDbclick, ngDisabled, ngHide, ngHref, ngInclude, <span class="pink">ngModel</span>, ngMousedown, <span class="pink">ngRepeat</span>, ngView, ...</p>
+				</section>
+				
+				<section>
+					<h2>그럼 지시자로 컴포넌트를 <br><br> 만들어 볼까요?</h2>
+				</section>
+
+				<section>
+					<h2>UI 컴포넌트 개발방법</h2>
+					<ul>
+						<li>팀플릿을 이용한 개발</li>
+						<li>외부 라이브러리를 이용한 개발</li>
+					</ul>
+				</section>
+
+				<section>
+					<section>
+						<h2>템플릿을 이용한 개발</h2>
+					</section>
+					<section>
+						<h3>페널을 만들어 봐요.</h3>	
+					</section>
+				</section>
+				<section>
+					<section>
+						<h2>외부 라이브러리를 이용한 개발</h2>
+					</section>
+					<section>
+						<h3>jquery의 sparkline을 이용해봐요!</h3>	
+						<a href="http://omnipotent.net/jquery.sparkline/" target="_blank">
+							<img src="images/gdg/sparkline.png">
+						</a>
+					</section>
+				</section>
+
+				<section>
+					
+					<a href="http://ngmodules.org/" target="_blank">
+						<h2>많은 외부 모듈</h2>
+						<h4>(UI 컴포넌트 포함)</h4>
+						<img src="images/gdg/angularmodule.png" style="height:400px;">
+					</a>
+				</section>
+
+				<section>
+					<img src="images/gdg/isItExciting.jpg">
+				</section>
+				<section>
+					<h1>QnA</h1>
+				</section>
+				<section>
+					<h1>감사합니다.</h1>
+				</section>
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+		<script>
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				theme: Reveal.getQueryHash().theme,
+				transition: Reveal.getQueryHash().transition || 'default',
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+		</script>
+	</body>
+</html>
