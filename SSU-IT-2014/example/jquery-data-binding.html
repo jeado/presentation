@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>jQuery Data Binding</title>
+	<script src="jquery-1.9.1/jquery-1.9.1.min.js"></script>
+</head>
+<body>
+	<input id="toggleShowHide" type="checkbox">
+	<div id="specialParagraph">
+	 위의 체크박스를 클릭하면 보시는 내용은 숨겨질 것입니다.
+	</div>
+	<script type="text/javascript">
+	$(function() {
+	 function toggle() {
+	  var isChecked = $('#toggleShowHide').is(':checked');
+	  var specialParagraph = $('#specialParagraph');
+	  console.log(isChecked);
+	  if (!isChecked) { specialParagraph.show(); } 
+	  else { specialParagraph.hide();  }
+	 }
+
+	 $('#toggleShowHide').change(function() {
+	  toggle();
+	 });
+
+	 toggle();
+	});
+	</script>
+</body>
+</html>

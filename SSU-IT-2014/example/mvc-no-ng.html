@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>MVC Example - no AngularJS</title>
+	<link rel="stylesheet" type="text/css" href="bootstrap/dist/css/bootstrap.css">
+	<script src="jquery-1.9.1/jquery-1.9.1.min.js"></script>
+</head>
+<body>
+	<div id="search-panel">
+		<label>부서</label>
+		<select class="dept-dropbox">
+			<option value="">선택</option>
+		</select>
+		<label>직급</label>
+		<select class="pos-dropbox">
+			<option value="">선택</option>
+		</select>
+		<button id="sFind">검색</button>
+	</div>
+	<div id="gridPanel">
+		<table class="table table-bordered table-hover">
+			<thead>
+				<tr>
+					<td>사번</td>
+					<td>이름</td>
+					<td>부서</td>
+				</tr>
+			</thead>
+			<tbody></tbody>
+		</table>
+	</div>
+	<script type="text/javascript">
+	// listData를 이용하여 dropBox(select)의 option을 구성한다.
+	function makeDropBox(dropbox, listData){
+	 var option;
+		
+	 if(listData){
+	  for(var i = 0, length = listData.length; i < length; i++) {
+	   option = document.createElement("option");
+	   option.value = listData[i].cdDetailNo;
+	   option.text = listData[i].cdDetailName;
+	   dropbox.options.add(option);
+	  }
+	 }
+	};
+
+	var searchPanel = document.getElementById("search-panel");
+	var deptDropbox = searchPanel.getElementsByClassName("dept-dropbox")[0];
+	var posDropbox = searchPanel.getElementsByClassName("pos-dropbox")[0];
+	var sUserId = document.getElementById("sUserId");
+	var sUserNm = document.getElementById("sUserNm");
+	var sFind = document.getElementById("sFind");
+
+  makeDropBox(deptDropbox, [
+		{ cdDetailNo: '001', cdDetailName: '부서A'},
+		{ cdDetailNo: '002', cdDetailName: '부서B'}
+		]);		
+	
+  makeDropBox(posDropbox, [
+		{ cdDetailNo: '001', cdDetailName: '사원'},
+		{ cdDetailNo: '002', cdDetailName: '대리'}
+	]);		
+		
+	// 조회버튼에 이벤트 등록
+	//document.getElementById("sFind").onclick = function(){
+	sFind.onclick = function(){
+	 // 조회 버특 클릭 시 인사 정보 조회
+	 $.ajax("user.json")
+	  // 인사 정보 조회 후 처리
+	  .success(function(jsonData){
+	   // masterView를 이용하여 grid 정보 갱신
+	   setGridData(jsonData);
+	  });
+	};
+
+	var gridColumn = ["userId", "userNm", "deptCd"];
+	var grid = document.getElementById("gridPanel").getElementsByTagName("table")[0];
+	var gridBody = grid.children[1];
+	 
+	function setGridData(listData){
+	 var list = "";
+	 gridData = listData;
+	 if(listData){
+	  for(var i = 0, length = listData.length; i < length; i++) {
+	   list += "<tr>";
+	   for(var j = 0, length2 = gridColumn.length; j < length2; j++) {
+	    list += "<td>";
+	    list += listData[i][gridColumn[j]] || " ";
+	    list += "</td>";
+	   }
+	   list += "</tr>";
+	  }
+		}
+
+	 gridBody.innerHTML = list; // 값 변경
+	};
+	</script>
+</body>
+</html>

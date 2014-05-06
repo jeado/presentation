@@ -143,13 +143,16 @@
 				<section>
 					<section>
 						<h2>양방향 데이터 바인딩</h2>
+						<br>
+						<p>예제를 통해 알아봐요!</p>	
+						<img src="images/databinding-examples.png">
 					</section>
 					<section>
 						<h2>jQuery 예제</h2>
 <pre>
 <code data-trim contenteditable style="font-size: 18px; margin-top: 20px;">
   <input id="toggleShowHide" type="checkbox">
-<div id=”specialParagraph”>
+<div id="specialParagraph">
  위의 체크박스를 클릭하면 보시는 내용은 숨겨질 것입니다.
 </div>
 </code>
@@ -161,7 +164,7 @@ $(function() {
  function toggle() {   
   var isChecked = $('#toggleShowHide').is(':checked');
   var specialParagraph = $('#specialParagraph');
-  if (isChecked) { specialParagraph.show(); } 
+  if (!isChecked) { specialParagraph.show(); } 
   else { specialParagraph.hide();  }
  }
 
@@ -180,50 +183,51 @@ $(function() {
 <pre>
 <code data-trim contenteditable style="font-size: 18px; margin-top: 20px;">
 <input ng-model="showSpecial" type="checkbox">
-<div ng-show=”showSpecial”>
+<div ng-hide="showSpecial">
  위의 체크박스를 클릭하면 보시는 내용은 숨겨질 것입니다.
 </div>
 </code>
 </pre>
 						<img src="images/databinding.png" style="background:white; padding: 20px;"alt="양방향 데이터 바인딩">
 					</section>
+				</section>
+<section data-state="normal">
 					<section>
 						<h2>MVC 구조 제공</h2>
 						<img src="images/mvc.png" style="background:white; padding: 20px;"alt="양방향 데이터 바인딩">
 					</section>
-					<section>
+<section>
 						<h2>MVC 구조가 없는 코드</h2>
 						<h4>HTML</h4>
-<pre>
-<code data-trim contenteditable style="font-size: 18px;">
-						<div id="search-panel">
-							 <label>부서</label>
-						 <select class="dept-dropbox"></select>
-						 <label>직급</label>
-					 <select class="pos-dropbox"></select>
+							<pre>
+							<code data-trim contenteditable style="font-size: 18px;">
+<div id="search-panel">
+ <label>부서</label>
+ <select class="dept-dropbox"><option value="">선택</option></select>
+ <label>직급</label>
+ <select class="pos-dropbox"><option value="">선택</option></select>
  <button id="sFind">검색</button>
-				</div>
-				<div id="gridPanel">
-					 <table>
-						  <thead>
-							   <tr><td>사번</td><td>이름</td><td>부서</td></tr>
-						  </thead>
-					  <tbody></tbody>
-				 </table>
-			</div>
-</code>
-</pre>
-		</section>
-		<section>
-			<h2>MVC 구조가 없는 코드</h2>
-			<h4>JavaScript</h4>
-<pre>
-<code data-trim contenteditable style="font-size: 18px; margin-top: 20px;">
+</div>
+<div id="gridPanel">
+ <table>
+  <thead>
+   <tr><td>사번</td><td>이름</td><td>부서</td></tr>
+  </thead>
+  <tbody></tbody>
+ </table>
+</div>
+							</code>
+						</pre>
+					</section>
+					<section>
+						<h2>MVC 구조가 없는 코드</h2>
+						<h4>JavaScript</h4>
+						<pre>
+							<code data-trim contenteditable style="font-size: 18px; margin-top: 20px;">
 // listData를 이용하여 dropBox(select)의 option을 구성한다.
 function makeDropBox(dropbox, listData){
  var option;
- dropbox.options.length = 0; //초기화
-
+	
  if(listData){
   for(var i = 0, length = listData.length; i < length; i++) {
    option = document.createElement("option");
@@ -233,27 +237,25 @@ function makeDropBox(dropbox, listData){
   }
  }
 };
+
 var searchPanel = document.getElementById("search-panel");
 var deptDropbox = searchPanel.getElementsByClassName("dept-dropbox")[0];
 var posDropbox = searchPanel.getElementsByClassName("pos-dropbox")[0];
 var sUserId = document.getElementById("sUserId");
 var sUserNm = document.getElementById("sUserNm");
 var sFind = document.getElementById("sFind");
-$.ajax(urlDept)
- .success(function(jsonData){
-  // 부서 정보 조회 후 처리
-  makeDropBox(deptDropbox, jsonData.DS_CODE);
- });
 
+makeDropBox(deptDropbox, [
+ { cdDetailNo: '001', cdDetailName: '부서A'},
+ { cdDetailNo: '002', cdDetailName: '부서B'}
+]);		
 
-// 직급 정보 조회
-$.ajax(urlPos)
- .success(function posCallBack(jsonData){
-  // 직급 정보 조회 후 처리
-  makeDropBox(posDropbox, jsonData.DS_CODE);
- });
-
-
+makeDropBox(posDropbox, [
+ { cdDetailNo: '001', cdDetailName: '사원'},
+ { cdDetailNo: '002', cdDetailName: '대리'}
+]);
+	
+	
 // 조회버튼에 이벤트 등록
 //document.getElementById("sFind").onclick = function(){
 sFind.onclick = function(){
@@ -262,9 +264,10 @@ sFind.onclick = function(){
   // 인사 정보 조회 후 처리
   .success(function(jsonData){
    // masterView를 이용하여 grid 정보 갱신
-   CommMng.userMnge.GridView.setGridData(jsonData.USER_DS);
+   setGridData(jsonData.USER_DS);
   });
 };
+
 var gridColumn = ["userId", "userNm", "deptCd"];
 var grid = document.getElementById("gridPanel").getElementsByTagName("table")[0];
 var gridBody = grid.children[1];
@@ -274,159 +277,127 @@ function setGridData(listData){
  gridData = listData;
  if(listData){
   for(var i = 0, length = listData.length; i < length; i++) {
-			   list += "<tr>";
+   list += "&lt;tr&gt;";
    for(var j = 0, length2 = gridColumn.length; j < length2; j++) {
-				    list += "<td>";
+    list += "&lt;td&gt;";
     list += listData[i][gridColumn[j]] || " ";
-				    list += "</td>";
+    list += "&lt;/td&gt;";
    }
-			   list += "</tr>";
+   list += "&lt;/tr&gt;";
   }
 }
+
  gridBody.innerHTML = list; // 값 변경
 };
 </code>
 </pre>
-		</section>
-		
-		<section>
-			<h3>MVC 구조화된 코드</h3>
-			<h5>HTML (Template)</h5>
-<pre>
-<code data-trim contenteditable style="font-size: 18px;">
-			<div ng-controller="userMgtCtr">
-				<div>
-					 <label>부서</label>
-					 <select ng-model="sObj.deptId" ng-options="d.deptId as d.deptNm for d in deptList">
-					 </select>
-					 <label>직급</label>
-					 <select ng-model="sObj.posId"
- ng-options="p.posId as p.posNm for p in posList">
-					 </select>
+					</section>
+					
+					<section>
+						<h3>MVC 구조화된 코드</h3>
+								<h5>HTML (Template)</h5>
+							<pre>
+							<code data-trim contenteditable style="font-size: 18px;">
+<div ng-controller="userMgtCtr">
+<div>
+ <label>부서</label>
+ <select ng-model="sObj.deptId" ng-options="d.deptId as d.deptNm for d in deptList">
+ </select>
+ <label>직급</label>
+ <select ng-model="sObj.posId"
+ 	ng-options="p.posId as p.posNm for p in posList">
+ </select>
  <button ng-click="find(sObj)">검색</button>
-				</div>
-				<div>
-					 <table>
-						  <thead>
-							   <tr><td>사번</td><td>이름</td><td>부서</td></tr>
-						  </thead>
-						  <tbody>
-							   <tr ng-repeat="user in userList">
-								    <td>{{userId}}</td><td>{{userNm}}</td><td>{{userNm}}</td>
-							   </tr>
-						  </tbody>
-					 </table>
-				</div>
-			</div>
-</code>
-</pre>
-		</section>
-		<section>
-			<h2>MVC 구조화된 코드</h2>
-			<h4>JavaScript (Controller)</h4>
-<pre>
-<code data-trim contenteditable style="font-size: 18px;">
+</div>
+<div>
+ <table>
+  <thead>
+   <tr><td>사번</td><td>이름</td><td>부서</td></tr>
+  </thead>
+  <tbody>
+   <tr ng-repeat="user in userList">
+    <td>{{user.userId}}</td><td>{{user.userNm}}</td><td>{{user.deptCd}}</td>
+   </tr>
+  </tbody>
+ </table>
+</div>
+</div>
+							</code>
+						</pre>
+					</section>
+				<section>
+						<h2>MVC 구조화된 코드</h2>
+						<h4>JavaScript (Controller)</h4>
+							<pre>
+							<code data-trim contenteditable style="font-size: 18px;">
 function userMgtCtr ($scope,$http) {
+ $scope.sObj={deptId:'',posId:''};
  $scope.deptList = [
   { deptId: '001', deptNm: '부서A'},
   { deptId: '002', deptNm: '부서B'}
  ];
+
  $scope.posList = [
   { posId: '001', posNm: '사원'},
   { posId: '002', posNm: '대리'}
  ];
+
  $scope.find = function (sObj) {
   $http({
-   method: 'GET', url: 'getUserList',
+   method: 'GET', url: 'user.json',
    params: { deptId: sObj.deptId, posId: sObj.posId }
   })
    .success(function(data, status, headers, config) {
-    response.data = $scope.userList;
+    $scope.userList = data;
    });
  };
 }
-</code>
-</pre>
-		</section>
-	</section>
-	<section>
-		<section>
-			<h1>UI 컴포넌트?</h1>
-		</section>
-		<section>
-			<h2>그리드</h2>
-			<a href="http://flarnie.com/2013/javascript/best-javascript-grids/" target="_blank"><img src="images/gdg/grid-mashup1.png"></a>
-		</section>
-		<section>
-			<h2>차트</h2>
-			<a href="http://nvd3.org/" target="_blank"><img src="images/gdg/chart-mashup1.png" style="height:500px; border:none; background:none;"></a>
-		</section>
-		<section>
-			<h2>그 외에..</h2>
-			<ul>
-				<li>Tabs</li>
-				<li>Datepicker</li>
-				<li>Carousel</li>
-				<li>Modal (Dailogue)</li>
-				<li>ComboBox</li>
-				<li>....</li>
-			</ul>
-		</section>
-	</section>
-	<section>
-		<h3>AngularJS는 아시죠?</h3>
-		<img src="images/gdg/AngularJS-large.png" style="background-color:white; padding: 10px;">
-	</section>
-	<section>
-		<h2>AngularJS는 어떤 UI 컴포넌트를 <br><br>제공할까요?</h2>
-	</section>
-	<section>
-		<img src="images/gdg/nothing.jpg">
-		<p>아무것도 없습니다.</p>
-	</section>
-	<section>
-		<h3>jQuery는 플러그인이 있다!</h3>
-		<a href="http://plugins.jquery.com/" target="_blank">
-		<img src="images/gdg/jquery-plugin-registry.png">
-		</a>
-	</section>
-	<section>
-		<h1>Directive (지시자)</h1>
-	</section>
-	<section data-state="normal">
-		<h3>An overview of AngularJS</h3>
-		<br>
-		<p>Google이 만든 웹 어플리케이션을 위한 <br> Structural Framework</p>
-		<br>
-		<p>
-		<ul>
-			<li>양방향 데이터 바인딩</li>
-			<li>MVW</li>
-			<li>Template</li>
-			<li style="color:#d14836">Directive를 통한 UI 컴포넌트 재사용</li>
-			<li>E2E 테스팅 및 Mocks</li>
-			<li>의존성 주입 (DI)</li>
-			<li>...</li>
-		</ul>
-		</p>
-		<br>
-		<p>
-		CRUD Apps 필수 기능 제공을 통한
-		<br>
-		어플리케이션 개발의 단순화
-		</p>
-	</section>
-	<section>
-		<h1>지시자란?</h1>
-		<p>
-		directives are markers on a DOM element (such as an attribute, element name, or CSS class) that tell AngularJS's HTML compiler ($compile) to attach a specified behavior to that DOM element or even transform the DOM element and its children. (from AngularJS Officail DOC)
-		</p>
-	</section>
-	
-	<section>
-		<h3>초간단 hello 지시자</h3>
-<pre style="margin: 0px auto;">
-<code data-trim contenteditable style="font-size: 18px; padding">
+							</code>
+						</pre>
+					</section>
+</section>
+				<section data-state="normal">
+					<section>
+						<h2>Directive 제공</h2>
+					</section>
+					<section>
+						<h1>directive?</h1>
+						<h2>지시자란?</h2>
+						<br>
+						<p>
+						directives are markers on a DOM element (such as an attribute, element name, or CSS class) that tell AngularJS's HTML compiler ($compile) to attach a specified behavior to that DOM element or even transform the DOM element and its children. (from AngularJS Officail DOC)
+						</p>
+					</section>
+
+					<section>
+						<p>Directive를 통하여 새로운 HTML 문법을 <br> 브라우져들에게 가르칠 수 있다.</p>
+						<img src="img/12-5.png" alt="directive example 5">
+					</section>
+					<section>
+						<h2>Built-in Directive</h2>
+						<p>a, form, input, <span class="pink">ngApp</span>, ngBind, ngChange, ngClass, <span class="pink">ngClick</span>, <span class="pink">ngController</span>, ngCloak, ngDbclick, ngDisabled, ngHide, ngHref, ngInclude, <span class="pink">ngModel</span>, ngMousedown, <span class="pink">ngRepeat</span>, ngView, ...</p>
+					</section>
+					<section>
+						<h2>Custom Directive - alert</h2>
+						<img src="img/12-1.png" alt="directive example 1">
+					</section>
+					<section>
+						<h2>Custom Directive - tabs</h2>
+						<img src="img/12-2.png" alt="directive example 2">
+					</section>
+					<section>
+						<h2>Custom Directive - popover</h2>
+						<img src="img/12-3.png" alt="directive example 3">
+					</section>
+					<section>
+						<a href="example/directive.html" target="_blank">
+							<h2>Directive 사용 DEMO</h2>
+						</a>
+					</section>
+					<section>
+					<h3>초간단 hello 지시자</h3>
+					<pre style="margin: 0px auto;">
+					<code data-trim contenteditable style="font-size: 18px; padding">
 &lt;body ng-app="demo"&gt;
  &lt;h1 hello&gt;&lt;/h1&gt;
 &lt;/body&gt;
@@ -441,129 +412,15 @@ angular.module('demo', []).
   };
 }]);
 &lt;/script&gt;
-</code>
-</pre>
-	</section>
-	
-	<section>
-		<img src="images/gdg/jqueryVsDirective.png" style="padding: 10px; background: white; height: 500px;">
-	</section>
-	<section>
-		<h2>Built-in Directive</h2>
-		<p>a, form, input, <span class="pink">ngApp</span>, ngBind, ngChange, ngClass, <span class="pink">ngClick</span>, <span class="pink">ngController</span>, ngCloak, ngDbclick, ngDisabled, ngHide, ngHref, ngInclude, <span class="pink">ngModel</span>, ngMousedown, <span class="pink">ngRepeat</span>, ngView, ...</p>
-	</section>
-	
-	<section>
-		<h2>그럼 지시자로 컴포넌트를 <br><br> 만들어 볼까요?</h2>
-	</section>
-	<section>
-		<h2>UI 컴포넌트 개발방법</h2>
-		<ul>
-			<li>팀플릿을 이용한 개발</li>
-			<li>외부 라이브러리를 이용한 개발</li>
-		</ul>
-	</section>
-	<section>
-		<section>
-			<h2>템플릿을 이용한 개발</h2>
-		</section>
-		<section>
-			<h3>페널을 만들어 봐요.</h3>
-		</section>
-		<section>
-<pre style="margin: 0px auto;">
-<code data-trim contenteditable style="font-size: 18px; padding">
-&lt;body&gt;
- &lt;panel title=&quot;&#xc548;&#xb155;&#xd558;&#xc138;&#xc694;&quot; contents=&quot;&#xc548;&#xb155;?&quot;&gt;&lt;/panel&gt;
- &lt;panel title=&quot;&#xc548;&#xb155;&#xd558;&#xc138;&#xc694;4&quot; contents=&quot;&#xc548;&#xb155;?&quot;&gt;&lt;/panel&gt;
-&lt;/body&gt;
-&lt;script type=&quot;text/javascript&quot;&gt;
-angular.module(&#039;demo&#039;, [])
- .directive(&#039;panel&#039;, [&#039;$log&#039;, function($log){
-  return {
-   scope: {
-    title :&quot;@&quot;,
-    contents:&quot;@&quot;
-   },
-   restrict: &#039;AE&#039;,
-   templateUrl: &#039;panel.tmpl.html&#039;,
-   link: function($scope, iElm, iAttrs, controller) {
-    jQuery(iElm).find(&#039;.panel-heading&#039;)
-     .click(function() {
-      jQuery(iElm).find(&#039;.panel-body&#039;).toggle();
-     });
-   }
-  };
- }]);
-&lt;/script&gt;
-</code>
-</pre>
-		</section>
-	</section>
-	<section>
-		<section>
-			<h2>외부 라이브러리를 이용한 개발</h2>
-		</section>
-		<section>
-			<h3>jquery의 sparkline을 이용해봐요!</h3>
-			<a href="http://omnipotent.net/jquery.sparkline/" target="_blank">
-			<img src="images/gdg/sparkline.png">
-			</a>
-		</section>
-		<section>
-<pre style="margin: 0px auto;">
-<code data-trim contenteditable style="font-size: 18px; padding">
-&lt;body ng-controller=&quot;demoCtrl&quot;&gt;
-&lt;sparkline data=&quot;array&quot;&gt;&lt;/sparkline&gt;
-&lt;button ng-click=&quot;change()&quot;&gt;change Data&lt;/button&gt;
-&lt;/body&gt;
-&lt;script type=&quot;text/javascript&quot;&gt;
-angular.module(&#039;demo&#039;, [])
- .controller(&#039;demoCtrl&#039;,function  ($scope) {
-  $scope.array = [10,8,5,7,4,4,1,10,8,5,7,4,4];
-  $scope.change = function () {
-   $scope.array = [1,2,3,2,4,2,10,1,2,9,2,1,10];
-  }
- })
- .directive(&#039;sparkline&#039;, [&#039;$log&#039;, function($log){
- return {
-  scope: {
-   data : &quot;=&quot;
-  },
-  restrict: &#039;AE&#039;,
-  link: function($scope, iElm, iAttrs, controller) {
-   $scope.$watch(function (newData, beforeData) {
-    $(iElm).sparkline(newData.data);
-   });
-  }
- };
- }]);
-&lt;/script&gt;
-</code>
-</pre>
-		</section>
-	</section>
-	<section>
-		<a href="http://ngmodules.org/" target="_blank">
-		<h2>많은 외부 모듈</h2>
-		<h4>(UI 컴포넌트 포함)</h4>
-		<img src="images/gdg/angularmodule.png" style="height:400px;">
-		</a>
-	</section>
-	<section>
-		<img src="images/gdg/superk2.jpg" style="height:500px;">
-		<h2>eGovAngularJS 프로젝트</h2>
-	</section>
-	<section>
-		<h2>다양한 UI 컴포넌트 제공</h2>
-		<img src="images/egovAngularJScomponents.png">
-	</section>
-	<section>
-		<h2>개발을 쉽게 도와주는 <br><br> <span class="blue">개발자 사이트</span> 제공</h2>
-		<a href="http://egov.angularjs.or.kr/doc/" target="_blank">
-		<img src="images/image2.png">
-		</a>
-	</section>
+					</code>
+					</pre>
+						</section>
+						
+						<section>
+							<img src="images/gdg/jqueryVsDirective.png" style="padding: 10px; background: white; height: 500px;">
+						</section>
+				</section>
+
 	<section>
 		<img src="images/gdg/isItExciting.jpg">
 	</section>

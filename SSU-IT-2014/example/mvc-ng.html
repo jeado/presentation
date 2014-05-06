@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en" ng-app>
+<head>
+	<meta charset="UTF-8">
+	<title>MVC Example - no AngularJS</title>
+	<link rel="stylesheet" type="text/css" href="bootstrap/dist/css/bootstrap.css">
+	<script src="angular/angular.min.js"></script>
+</head>
+<body ng-controller="userMgtCtr">
+	<div>
+		<label>부서</label>
+		<select ng-model="sObj.deptId" ng-options="d.deptId as d.deptNm for d in deptList">
+			<option value="">선택</option>
+		</select>
+		<label>직급</label>
+		<select ng-model="sObj.posId" ng-options="p.posId as p.posNm for p in posList">
+			<option value="">선택</option>
+		</select>
+		<button ng-click="find(sObj)">검색</button>
+	</div>
+	<div>
+		<table class="table table-bordered table-hover">
+			<thead>
+				<tr>
+					<td>사번</td>
+					<td>이름</td>
+					<td>부서</td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="user in userList">
+					<td>{{user.userId}}</td>
+					<td>{{user.userNm}}</td>
+					<td>{{user.deptCd}}</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</body>
+	<script type="text/javascript">
+		function userMgtCtr ($scope,$http) {
+		 $scope.sObj={deptId:'',posId:''};
+		 
+		 $scope.deptList = [
+		  { deptId: '001', deptNm: '부서A'},
+		  { deptId: '002', deptNm: '부서B'}
+		 ];
+
+		 $scope.posList = [
+		  { posId: '001', posNm: '사원'},
+		  { posId: '002', posNm: '대리'}
+		 ];
+
+		 $scope.find = function (sObj) {
+		  $http({
+		  	method: 'GET', url: 'user.json',
+		  	params: { deptId: sObj.deptId, posId: sObj.posId }
+		  })
+		  .success(function(data, status, headers, config) {
+		  	$scope.userList = data;
+		  });
+		 };
+		}
+	</script>
+</html>
